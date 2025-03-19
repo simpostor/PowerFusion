@@ -1,9 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import { AppBar, Toolbar, Typography, Button, Container, Box, Grid, Card, CardContent, TextField, IconButton, Switch } from '@mui/material';
-import { Link } from 'react-scroll';
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  Container,
+  Box,
+  Grid,
+  Card,
+  CardContent,
+  TextField,
+  IconButton,
+  Switch,
+  Collapse
+} from '@mui/material';
+import { Link as ScrollLink } from 'react-scroll';
 import { Facebook, Twitter, LinkedIn } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 const sections = [
   { id: 'home', label: 'Home' },
@@ -12,9 +27,143 @@ const sections = [
   { id: 'contact', label: 'Contact' },
 ];
 
+const serviceCards = [
+  {
+    title: "Hybrida",
+    subtitle: "Hybrid System",
+    description: "Advanced hybrid systems combining renewable sources for optimal efficiency.",
+  },
+  {
+    title: "Helios",
+    subtitle: "Solar Arrays",
+    description: "State-of-the-art solar arrays for reliable and efficient energy production.",
+  },
+  {
+    title: "Anemo",
+    subtitle: "Wind Mill Array",
+    description: "Innovative wind mill arrays designed for maximum wind energy capture.",
+  },
+  {
+    title: "Aqua",
+    subtitle: "Hydro Generation",
+    description: "Efficient hydro generation systems harnessing water energy for sustainable power.",
+  },
+];
+
+const hoverColors = {
+  Hybrida: "#e6f4ea", // light eco green
+  Helios: "#fff9e6",  // light solar yellow
+  Anemo: "#e0f7f5",   // light greenish-blue
+  Aqua: "#e0f7ff",    // light blue
+};
+
+function ServiceCard({ card, colors, hoverColors, isDarkMode, navigate, animation }) {
+  const [expanded, setExpanded] = useState(false);
+
+  const handleCardClick = () => {
+    // Only navigate if technical details are not being toggled
+    if (!expanded) {
+      navigate(`/services/${card.title}`);
+    }
+  };
+
+  const handleTechSpecClick = (e) => {
+    // Prevent the card click from triggering navigation
+    e.stopPropagation();
+    setExpanded((prev) => !prev);
+  };
+
+  return (
+    <Grid item xs={12} md={3} data-aos={animation}>
+      <Card
+        onClick={handleCardClick}
+        sx={{
+          background: colors.cardBg,
+          borderRadius: '0',
+          border: `2px solid ${colors.border}`,
+          transition: 'all 0.3s ease',
+          height: '100%',
+          cursor: 'pointer',
+          transform: expanded ? 'scale(1.05)' : 'none',
+          '&:hover': {
+            borderColor: colors.cardHoverBorder,
+            transform: expanded ? 'scale(1.05)' : 'translateY(-5px) scale(1.03)',
+            backgroundColor: hoverColors[card.title] || colors.cardBg,
+            ...(isDarkMode && {
+              '& .MuiTypography-root': { color: '#0D0D0D !important' },
+              '& .MuiButton-root': { color: '#0D0D0D !important' },
+            }),
+          },
+        }}
+      >
+        <CardContent sx={{ p: 4 }}>
+          <Typography
+            variant="h3"
+            sx={{
+              color: colors.textPrimary,
+              mb: 1,
+              fontFamily: 'Roboto, sans-serif',
+              fontWeight: 700,
+              fontSize: '2rem',
+              transition: 'transform 0.3s',
+              '&:hover': { transform: 'scale(1.02)' },
+            }}
+          >
+            {card.title}
+          </Typography>
+          <Typography
+            variant="subtitle1"
+            sx={{
+              color: colors.textSecondary,
+              mb: 2,
+              fontFamily: 'Roboto, sans-serif',
+              fontWeight: 500,
+            }}
+          >
+            {card.subtitle}
+          </Typography>
+          <Typography
+            variant="body1"
+            sx={{
+              color: colors.textSecondary,
+              lineHeight: 1.6,
+            }}
+          >
+            {card.description}
+          </Typography>
+          <Button
+            onClick={handleTechSpecClick}
+            sx={{
+              color: colors.textPrimary,
+              mt: 3,
+              padding: '8px 0',
+              borderBottom: `2px solid ${colors.border}`,
+              borderRadius: '0',
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                borderColor: colors.textPrimary,
+                transform: 'translateY(-3px)',
+              },
+            }}
+          >
+            Technical Specifications →
+          </Button>
+          <Collapse in={expanded}>
+            <Box mt={2}>
+              <Typography variant="body2" sx={{ color: colors.textSecondary }}>
+                Additional technical details for {card.title}: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              </Typography>
+            </Box>
+          </Collapse>
+        </CardContent>
+      </Card>
+    </Grid>
+  );
+}
+
 function App() {
-  // Default is light mode (isDarkMode false)
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     AOS.init({
@@ -30,7 +179,6 @@ function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Define colors for each mode.
   const colors = isDarkMode
     ? {
         bg: '#0D0D0D',
@@ -54,38 +202,6 @@ function App() {
         cardBg: '#FFFFFF',
         cardHoverBorder: '#000000',
       };
-
-  // Define service cards.
-  const serviceCards = [
-    {
-      title: "Hybrida",
-      subtitle: "Hybrid System",
-      description: "Advanced hybrid systems combining renewable sources for optimal efficiency.",
-    },
-    {
-      title: "Helios",
-      subtitle: "Solar Arrays",
-      description: "State-of-the-art solar arrays for reliable and efficient energy production.",
-    },
-    {
-      title: "Anemo",
-      subtitle: "Wind Mill Array",
-      description: "Innovative wind mill arrays designed for maximum wind energy capture.",
-    },
-    {
-      title: "Aqua",
-      subtitle: "Hydro Generation",
-      description: "Efficient hydro generation systems harnessing water energy for sustainable power.",
-    },
-  ];
-
-  // Define subtle hover colors for each card (light accent colors)
-  const hoverColors = {
-    "Hybrida": "#e6f4ea", // light eco green
-    "Helios": "#fff9e6",  // light solar yellow
-    "Anemo": "#e0f7f5",   // light greenish-blue (genshin anemo feel)
-    "Aqua": "#e0f7ff",    // light blue
-  };
 
   return (
     <div style={{ background: colors.bg, overflowX: 'hidden' }}>
@@ -114,7 +230,7 @@ function App() {
           {sections.map((section) => (
             <Button
               key={section.id}
-              component={Link}
+              component={ScrollLink}
               to={section.id}
               smooth={true}
               duration={500}
@@ -253,89 +369,23 @@ function App() {
               '&:hover': { transform: 'scale(1.03)' },
             }}
           >
-            AI Powered Recommendation
+            Services
           </Typography>
           <Grid container spacing={4}>
             {serviceCards.map((card, index) => {
               let animation = 'zoom-in';
               if (index === 0) animation = 'fade-right';
               else if (index === serviceCards.length - 1) animation = 'fade-left';
-
               return (
-                <Grid item xs={12} md={3} key={card.title} data-aos={animation}>
-                  <Card
-                    sx={{
-                      background: colors.cardBg,
-                      borderRadius: '0',
-                      border: `2px solid ${colors.border}`,
-                      transition: 'all 0.3s ease',
-                      height: '100%',
-                      '&:hover': {
-                        borderColor: colors.cardHoverBorder,
-                        transform: 'translateY(-5px) scale(1.03)',
-                        backgroundColor: hoverColors[card.title] || colors.cardBg,
-                        // In dark mode, override inner text to mimic light mode
-                        ...(isDarkMode && {
-                          '& .MuiTypography-root': { color: '#0D0D0D !important' },
-                          '& .MuiButton-root': { color: '#0D0D0D !important' },
-                        }),
-                      },
-                    }}
-                  >
-                    <CardContent sx={{ p: 4 }}>
-                      <Typography
-                        variant="h3"
-                        sx={{
-                          color: colors.textPrimary,
-                          mb: 1,
-                          fontFamily: 'Roboto, sans-serif',
-                          fontWeight: 700,
-                          fontSize: '2rem',
-                          transition: 'transform 0.3s',
-                          '&:hover': { transform: 'scale(1.02)' },
-                        }}
-                      >
-                        {card.title}
-                      </Typography>
-                      <Typography
-                        variant="subtitle1"
-                        sx={{
-                          color: colors.textSecondary,
-                          mb: 2,
-                          fontFamily: 'Roboto, sans-serif',
-                          fontWeight: 500,
-                        }}
-                      >
-                        {card.subtitle}
-                      </Typography>
-                      <Typography
-                        variant="body1"
-                        sx={{
-                          color: colors.textSecondary,
-                          lineHeight: 1.6,
-                        }}
-                      >
-                        {card.description}
-                      </Typography>
-                      <Button
-                        sx={{
-                          color: colors.textPrimary,
-                          mt: 3,
-                          padding: '8px 0',
-                          borderBottom: `2px solid ${colors.border}`,
-                          borderRadius: '0',
-                          transition: 'all 0.3s ease',
-                          '&:hover': {
-                            borderColor: colors.textPrimary,
-                            transform: 'translateY(-3px)',
-                          },
-                        }}
-                      >
-                        Technical Specifications →
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </Grid>
+                <ServiceCard
+                  key={card.title}
+                  card={card}
+                  colors={colors}
+                  hoverColors={hoverColors}
+                  isDarkMode={isDarkMode}
+                  navigate={navigate}
+                  animation={animation}
+                />
               );
             })}
           </Grid>
