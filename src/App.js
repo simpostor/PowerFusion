@@ -7,7 +7,7 @@ import { Facebook, Twitter, LinkedIn } from '@mui/icons-material';
 
 const sections = [
   { id: 'home', label: 'Home' },
-  { id: 'solutions', label: 'Solutions' },
+  { id: 'solutions', label: 'Services' },
   { id: 'impact', label: 'Impact' },
   { id: 'contact', label: 'Contact' },
 ];
@@ -19,8 +19,16 @@ function App() {
   useEffect(() => {
     AOS.init({
       duration: 1000,
-      once: true,
+      once: false,             // Allow animations to trigger on every scroll
+      mirror: true,            // Animate out when scrolling past elements in reverse
+      anchorPlacement: 'top-top', // Trigger when the element's top hits the top
     });
+    // Refresh AOS on scroll to ensure animations update correctly.
+    const handleScroll = () => {
+      AOS.refresh();
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   // Define colors for each mode.
@@ -47,6 +55,38 @@ function App() {
         cardBg: '#FFFFFF',
         cardHoverBorder: '#000000',
       };
+
+  // Define service cards with new naming.
+  const serviceCards = [
+    {
+      title: "Hybrida",
+      subtitle: "Hybrid System",
+      description: "Advanced hybrid systems combining renewable sources for optimal efficiency.",
+    },
+    {
+      title: "Helios",
+      subtitle: "Solar Arrays",
+      description: "State-of-the-art solar arrays for reliable and efficient energy production.",
+    },
+    {
+      title: "Anemo",
+      subtitle: "Wind Mill Array",
+      description: "Innovative wind mill arrays designed for maximum wind energy capture.",
+    },
+    {
+      title: "Aqua",
+      subtitle: "Hydro Generation",
+      description: "Efficient hydro generation systems harnessing water energy for sustainable power.",
+    },
+  ];
+
+  // Define subtle hover colors for each card (light accent colors)
+  const hoverColors = {
+    "Hybrida": "#e6f4ea", // light eco green
+    "Helios": "#fff9e6",  // light solar yellow
+    "Anemo": "#e0f7f5",   // light greenish-blue (genshin anemo feel)
+    "Aqua": "#e0f7ff",    // light blue
+  };
 
   return (
     <div style={{ background: colors.bg, overflowX: 'hidden' }}>
@@ -84,13 +124,14 @@ function App() {
                 color: colors.textSecondary,
                 mx: 2,
                 fontWeight: 500,
+                borderRadius: '0',
+                padding: '8px 16px',
+                transition: 'all 0.3s ease',
                 '&:hover': {
                   color: colors.textPrimary,
                   backgroundColor: colors.border,
+                  transform: 'translateY(-3px)', // pop effect
                 },
-                transition: 'all 0.3s ease',
-                borderRadius: '0',
-                padding: '8px 16px',
               }}
             >
               {section.label}
@@ -122,6 +163,10 @@ function App() {
                   lineHeight: 1.1,
                   fontSize: '4rem',
                   textTransform: 'uppercase',
+                  transition: 'transform 0.3s',
+                  '&:hover': {
+                    transform: 'scale(1.02)', // slight pop effect
+                  },
                 }}
               >
                 Industrial-Grade
@@ -143,6 +188,10 @@ function App() {
                   lineHeight: 1.6,
                   borderLeft: `4px solid ${colors.border}`,
                   paddingLeft: 3,
+                  transition: 'transform 0.3s',
+                  '&:hover': {
+                    transform: 'translateX(5px)', // stand up effect on hover
+                  },
                 }}
               >
                 Architectural energy solutions for urban infrastructure
@@ -155,10 +204,11 @@ function App() {
                   fontWeight: 700,
                   borderRadius: '0',
                   padding: '16px 32px',
+                  transition: 'all 0.3s ease',
                   '&:hover': {
                     background: colors.textSecondary,
+                    transform: 'scale(1.05)', // pop effect on hover
                   },
-                  transition: 'all 0.3s ease',
                 }}
               >
                 Explore Solutions
@@ -171,7 +221,10 @@ function App() {
                   padding: '8px',
                   background: colors.buttonBg,
                   boxShadow: `16px 16px 0 0 ${colors.border}`,
+                  transition: 'transform 0.3s',
                 }}
+                onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.02)')}
+                onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}
               >
                 <img
                   src="installing-solar-panels.webp"
@@ -189,7 +242,7 @@ function App() {
         </Container>
       </Box>
 
-      {/* Solutions Section */}
+      {/* Services Section */}
       <Box id="solutions" sx={{ py: 10, background: colors.headerBg }}>
         <Container maxWidth={false} sx={{ maxWidth: 1300 }}>
           <Typography
@@ -202,75 +255,97 @@ function App() {
               fontWeight: 900,
               fontSize: '3rem',
               textTransform: 'uppercase',
+              transition: 'transform 0.3s',
+              '&:hover': {
+                transform: 'scale(1.03)',
+              },
             }}
           >
-            Core Systems
+            Services
           </Typography>
           <Grid container spacing={4}>
-            {['Solar Arrays', 'Wind Turbines', 'Hydro Plants'].map((item, index) => (
-              <Grid
-                item
-                xs={12}
-                md={4}
-                key={item}
-                data-aos={index % 2 === 0 ? 'fade-right' : 'fade-left'}
-              >
-                <Card
-                  sx={{
-                    background: colors.cardBg,
-                    borderRadius: '0',
-                    border: `2px solid ${colors.border}`,
-                    transition: 'all 0.3s ease',
-                    height: '100%',
-                    '&:hover': {
-                      borderColor: colors.cardHoverBorder,
-                    },
-                  }}
-                >
-                  <CardContent sx={{ p: 4 }}>
-                    <Typography
-                      variant="h3"
-                      sx={{
-                        color: colors.textPrimary,
-                        mb: 2,
-                        fontFamily: 'Roboto, sans-serif',
-                        fontWeight: 700,
-                        fontSize: '2rem',
-                      }}
-                    >
-                      {item}
-                    </Typography>
-                    <Typography
-                      variant="body1"
-                      sx={{
-                        color: colors.textSecondary,
-                        lineHeight: 1.6,
-                      }}
-                    >
-                      {index === 0
-                        ? 'Monocrystalline photovoltaic systems with industrial efficiency ratings'
-                        : index === 1
-                        ? '3MW direct-drive turbines with predictive maintenance systems'
-                        : 'Run-of-river hydroelectric plants with minimal environmental impact'}
-                    </Typography>
-                    <Button
-                      sx={{
-                        color: colors.textPrimary,
-                        mt: 3,
-                        padding: '8px 0',
-                        borderBottom: `2px solid ${colors.border}`,
-                        borderRadius: '0',
-                        '&:hover': {
-                          borderColor: colors.textPrimary,
-                        },
-                      }}
-                    >
-                      Technical Specifications →
-                    </Button>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
+            {serviceCards.map((card, index) => {
+              // Determine animation effect based on card position
+              let animation = 'zoom-in';
+              if (index === 0) {
+                animation = 'fade-right';
+              } else if (index === serviceCards.length - 1) {
+                animation = 'fade-left';
+              }
+              return (
+                <Grid item xs={12} md={3} key={card.title} data-aos={animation}>
+                  <Card
+                    sx={{
+                      background: colors.cardBg,
+                      borderRadius: '0',
+                      border: `2px solid ${colors.border}`,
+                      transition: 'all 0.3s ease',
+                      height: '100%',
+                      '&:hover': {
+                        borderColor: colors.cardHoverBorder,
+                        transform: 'translateY(-5px) scale(1.03)',
+                        backgroundColor: hoverColors[card.title] || colors.cardBg,
+                      },
+                    }}
+                  >
+                    <CardContent sx={{ p: 4 }}>
+                      <Typography
+                        variant="h3"
+                        sx={{
+                          color: colors.textPrimary,
+                          mb: 1,
+                          fontFamily: 'Roboto, sans-serif',
+                          fontWeight: 700,
+                          fontSize: '2rem',
+                          transition: 'transform 0.3s',
+                          '&:hover': {
+                            transform: 'scale(1.02)',
+                          },
+                        }}
+                      >
+                        {card.title}
+                      </Typography>
+                      <Typography
+                        variant="subtitle1"
+                        sx={{
+                          color: colors.textSecondary,
+                          mb: 2,
+                          fontFamily: 'Roboto, sans-serif',
+                          fontWeight: 500,
+                        }}
+                      >
+                        {card.subtitle}
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        sx={{
+                          color: colors.textSecondary,
+                          lineHeight: 1.6,
+                        }}
+                      >
+                        {card.description}
+                      </Typography>
+                      <Button
+                        sx={{
+                          color: colors.textPrimary,
+                          mt: 3,
+                          padding: '8px 0',
+                          borderBottom: `2px solid ${colors.border}`,
+                          borderRadius: '0',
+                          transition: 'all 0.3s ease',
+                          '&:hover': {
+                            borderColor: colors.textPrimary,
+                            transform: 'translateY(-3px)',
+                          },
+                        }}
+                      >
+                        Technical Specifications →
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              );
+            })}
           </Grid>
         </Container>
       </Box>
@@ -285,7 +360,10 @@ function App() {
                   background: colors.buttonBg,
                   padding: '8px',
                   boxShadow: `16px 16px 0 0 ${colors.border}`,
+                  transition: 'transform 0.3s',
                 }}
+                onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.02)')}
+                onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}
               >
                 <img
                   src="https://images.unsplash.com/photo-1526779259212-939e64788e3c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80"
@@ -309,6 +387,10 @@ function App() {
                   fontWeight: 900,
                   fontSize: '3rem',
                   textTransform: 'uppercase',
+                  transition: 'transform 0.3s',
+                  '&:hover': {
+                    transform: 'scale(1.02)',
+                  },
                 }}
               >
                 Operational Metrics
@@ -318,6 +400,7 @@ function App() {
                   borderLeft: `4px solid ${colors.border}`,
                   paddingLeft: '24px',
                   marginBottom: '32px',
+                  transition: 'transform 0.3s',
                 }}
               >
                 <Typography
@@ -349,10 +432,11 @@ function App() {
                   fontWeight: 700,
                   borderRadius: '0',
                   padding: '16px 32px',
+                  transition: 'all 0.3s ease',
                   '&:hover': {
                     background: colors.textSecondary,
+                    transform: 'scale(1.05)',
                   },
-                  transition: 'all 0.3s ease',
                 }}
               >
                 View Full Report
@@ -375,6 +459,10 @@ function App() {
               fontWeight: 900,
               fontSize: '3rem',
               textTransform: 'uppercase',
+              transition: 'transform 0.3s',
+              '&:hover': {
+                transform: 'scale(1.03)',
+              },
             }}
           >
             Contact
@@ -446,10 +534,11 @@ function App() {
                   fontWeight: 700,
                   borderRadius: '0',
                   padding: '16px 48px',
+                  transition: 'all 0.3s ease',
                   '&:hover': {
                     background: colors.textSecondary,
+                    transform: 'scale(1.05)',
                   },
-                  transition: 'all 0.3s ease',
                 }}
               >
                 Submit
@@ -482,9 +571,11 @@ function App() {
             <IconButton
               sx={{
                 color: colors.textSecondary,
+                transition: 'all 0.3s ease',
                 '&:hover': {
                   color: colors.textPrimary,
                   backgroundColor: colors.border,
+                  transform: 'scale(1.1)',
                 },
               }}
             >
@@ -493,9 +584,11 @@ function App() {
             <IconButton
               sx={{
                 color: colors.textSecondary,
+                transition: 'all 0.3s ease',
                 '&:hover': {
                   color: colors.textPrimary,
                   backgroundColor: colors.border,
+                  transform: 'scale(1.1)',
                 },
               }}
             >
@@ -504,9 +597,11 @@ function App() {
             <IconButton
               sx={{
                 color: colors.textSecondary,
+                transition: 'all 0.3s ease',
                 '&:hover': {
                   color: colors.textPrimary,
                   backgroundColor: colors.border,
+                  transform: 'scale(1.1)',
                 },
               }}
             >
