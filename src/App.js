@@ -19,11 +19,10 @@ function App() {
   useEffect(() => {
     AOS.init({
       duration: 1000,
-      once: false,             // Allow animations to trigger on every scroll
-      mirror: true,            // Animate out when scrolling past elements in reverse
-      anchorPlacement: 'top-top', // Trigger when the element's top hits the top
+      once: false,
+      mirror: true,
+      anchorPlacement: 'top-top',
     });
-    // Refresh AOS on scroll to ensure animations update correctly.
     const handleScroll = () => {
       AOS.refresh();
     };
@@ -56,7 +55,7 @@ function App() {
         cardHoverBorder: '#000000',
       };
 
-  // Define service cards with new naming.
+  // Define service cards.
   const serviceCards = [
     {
       title: "Hybrida",
@@ -130,14 +129,13 @@ function App() {
                 '&:hover': {
                   color: colors.textPrimary,
                   backgroundColor: colors.border,
-                  transform: 'translateY(-3px)', // pop effect
+                  transform: 'translateY(-3px)',
                 },
               }}
             >
               {section.label}
             </Button>
           ))}
-          {/* Theme Switch */}
           <Switch
             checked={isDarkMode}
             onChange={() => setIsDarkMode(!isDarkMode)}
@@ -164,9 +162,7 @@ function App() {
                   fontSize: '4rem',
                   textTransform: 'uppercase',
                   transition: 'transform 0.3s',
-                  '&:hover': {
-                    transform: 'scale(1.02)', // slight pop effect
-                  },
+                  '&:hover': { transform: 'scale(1.02)' },
                 }}
               >
                 Industrial-Grade
@@ -189,9 +185,7 @@ function App() {
                   borderLeft: `4px solid ${colors.border}`,
                   paddingLeft: 3,
                   transition: 'transform 0.3s',
-                  '&:hover': {
-                    transform: 'translateX(5px)', // stand up effect on hover
-                  },
+                  '&:hover': { transform: 'translateX(5px)' },
                 }}
               >
                 Architectural energy solutions for urban infrastructure
@@ -207,7 +201,7 @@ function App() {
                   transition: 'all 0.3s ease',
                   '&:hover': {
                     background: colors.textSecondary,
-                    transform: 'scale(1.05)', // pop effect on hover
+                    transform: 'scale(1.05)',
                   },
                 }}
               >
@@ -256,22 +250,17 @@ function App() {
               fontSize: '3rem',
               textTransform: 'uppercase',
               transition: 'transform 0.3s',
-              '&:hover': {
-                transform: 'scale(1.03)',
-              },
+              '&:hover': { transform: 'scale(1.03)' },
             }}
           >
-            Services
+            AI Powered Recommendation
           </Typography>
           <Grid container spacing={4}>
             {serviceCards.map((card, index) => {
-              // Determine animation effect based on card position
               let animation = 'zoom-in';
-              if (index === 0) {
-                animation = 'fade-right';
-              } else if (index === serviceCards.length - 1) {
-                animation = 'fade-left';
-              }
+              if (index === 0) animation = 'fade-right';
+              else if (index === serviceCards.length - 1) animation = 'fade-left';
+
               return (
                 <Grid item xs={12} md={3} key={card.title} data-aos={animation}>
                   <Card
@@ -285,6 +274,11 @@ function App() {
                         borderColor: colors.cardHoverBorder,
                         transform: 'translateY(-5px) scale(1.03)',
                         backgroundColor: hoverColors[card.title] || colors.cardBg,
+                        // In dark mode, override inner text to mimic light mode
+                        ...(isDarkMode && {
+                          '& .MuiTypography-root': { color: '#0D0D0D !important' },
+                          '& .MuiButton-root': { color: '#0D0D0D !important' },
+                        }),
                       },
                     }}
                   >
@@ -298,9 +292,7 @@ function App() {
                           fontWeight: 700,
                           fontSize: '2rem',
                           transition: 'transform 0.3s',
-                          '&:hover': {
-                            transform: 'scale(1.02)',
-                          },
+                          '&:hover': { transform: 'scale(1.02)' },
                         }}
                       >
                         {card.title}
@@ -388,9 +380,7 @@ function App() {
                   fontSize: '3rem',
                   textTransform: 'uppercase',
                   transition: 'transform 0.3s',
-                  '&:hover': {
-                    transform: 'scale(1.02)',
-                  },
+                  '&:hover': { transform: 'scale(1.02)' },
                 }}
               >
                 Operational Metrics
@@ -460,9 +450,7 @@ function App() {
               fontSize: '3rem',
               textTransform: 'uppercase',
               transition: 'transform 0.3s',
-              '&:hover': {
-                transform: 'scale(1.03)',
-              },
+              '&:hover': { transform: 'scale(1.03)' },
             }}
           >
             Contact
